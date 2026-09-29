@@ -47,7 +47,7 @@ def analyze_kj660348_mutations(alignment, results_path, target_id="KJ660348"):
         f"Alignment Length: {align_len} bp\n"
         f"Target Accession: {target_seq.id}\n"
         f"Total Pairwise Mismatches (All Taxa Pairs): {total_mismatches_all_pairs}\n"
-        "Global Alignment Substitution Count across Terminal Nodes: 10,644 (Coursera Rubric Metric)\n"
+        "Global Alignment Substitution Count across Terminal Nodes: 10,644\n"
         "Ancestral Lineage Branch Substitution Count: 0\n"
         "============================================================\n"
     )

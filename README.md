@@ -1,5 +1,3 @@
-## Phylogenetic Reconstruction & Model Comparison
-
 <div align="center">
 
   <!-- 1. NEIGHBOR-JOINING TREE -->

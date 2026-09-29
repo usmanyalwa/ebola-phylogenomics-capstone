@@ -5,6 +5,5 @@ Sequences Analyzed: 10
 Alignment Length: 19220 bp
 Target Accession: KJ660348_Zaire_ebolavirus
 Total Pairwise Mismatches (All Taxa Pairs): 285295
-Global Alignment Substitution Count across Terminal Nodes: 10,644
-Ancestral Lineage Branch Substitution Count: 0
+Estimated Terminal Substitution Count (NJ Tree): 5248
 ============================================================

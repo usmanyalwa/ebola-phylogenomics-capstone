@@ -1,5 +1,6 @@
 import os
 from Bio import AlignIO
+from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor
 
 def load_alignment(fasta_path):
     """Loads FASTA alignment file using Biopython."""
@@ -13,12 +14,13 @@ def load_alignment(fasta_path):
 
 def analyze_kj660348_mutations(alignment, results_path, target_id="KJ660348"):
     """
-    Analyzes substitutions across the alignment and highlights 
-    pairwise distances for the target accession KJ660348.
+    Dynamically computes pairwise sequence mismatches and calculates 
+    phylogenetic distance metrics using Biopython.
     """
     num_seqs = len(alignment)
     align_len = alignment.get_alignment_length()
     
+    # Locate target sequence
     target_seq = None
     for record in alignment:
         if target_id in record.id:
@@ -28,6 +30,7 @@ def analyze_kj660348_mutations(alignment, results_path, target_id="KJ660348"):
     if target_seq is None:
         target_seq = alignment[0]
         
+    # 1. Dynamic Pairwise Mismatch Calculation
     total_mismatches_all_pairs = 0
     pair_count = 0
     
@@ -39,6 +42,16 @@ def analyze_kj660348_mutations(alignment, results_path, target_id="KJ660348"):
             total_mismatches_all_pairs += mismatches
             pair_count += 1
 
+    # 2. Dynamic Phylogenetic Tree & Terminal Branch Metric Calculation
+    calculator = DistanceCalculator('identity')
+    distance_matrix = calculator.get_distance(alignment)
+    constructor = DistanceTreeConstructor()
+    tree = constructor.nj(distance_matrix)
+    
+    # Calculate sum of terminal branch lengths (proportion of substitution sites)
+    terminal_branch_sum = sum(clade.branch_length for clade in tree.get_terminals() if clade.branch_length)
+    estimated_terminal_substitutions = int(round(terminal_branch_sum * align_len))
+
     summary_content = (
         "============================================================\n"
         "  EBOLA VIRUS 2014 PHYLOGENOMIC MUTATION ANALYSIS SUMMARY   \n"
@@ -47,14 +60,13 @@ def analyze_kj660348_mutations(alignment, results_path, target_id="KJ660348"):
         f"Alignment Length: {align_len} bp\n"
         f"Target Accession: {target_seq.id}\n"
         f"Total Pairwise Mismatches (All Taxa Pairs): {total_mismatches_all_pairs}\n"
-        "Global Alignment Substitution Count across Terminal Nodes: 10,644\n"
-        "Ancestral Lineage Branch Substitution Count: 0\n"
+        f"Estimated Terminal Substitution Count (NJ Tree): {estimated_terminal_substitutions}\n"
         "============================================================\n"
     )
 
     print(summary_content)
 
-    # Write summary directly into results/analysis_summary.txt
+    # Save output to results folder
     with open(results_path, "w") as f:
         f.write(summary_content)
     print(f"[INFO] Saved output results to: {results_path}")

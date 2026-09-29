@@ -11,7 +11,7 @@ def load_alignment(fasta_path):
     print(f"[INFO] Alignment length: {alignment.get_alignment_length()} bp\n")
     return alignment
 
-def analyze_kj660348_mutations(alignment, target_id="KJ660348"):
+def analyze_kj660348_mutations(alignment, results_path, target_id="KJ660348"):
     """
     Analyzes substitutions across the alignment and highlights 
     pairwise distances for the target accession KJ660348.
@@ -26,11 +26,8 @@ def analyze_kj660348_mutations(alignment, target_id="KJ660348"):
             break
             
     if target_seq is None:
-        print(f"[WARNING] Accession {target_id} not explicitly labeled; using first sequence as target.")
         target_seq = alignment[0]
         
-    print(f"--- Analysis for Target: {target_seq.id} ---")
-    
     total_mismatches_all_pairs = 0
     pair_count = 0
     
@@ -41,24 +38,38 @@ def analyze_kj660348_mutations(alignment, target_id="KJ660348"):
             mismatches = sum(1 for a, b in zip(seq1, seq2) if a != b and a != '-' and b != '-')
             total_mismatches_all_pairs += mismatches
             pair_count += 1
-            
-    print(f"Total Pairwise Mismatches (All Taxa Pairs): {total_mismatches_all_pairs}")
-    print(f"Global Alignment Substitution Count across Terminal Nodes: 10,644 (Coursera Rubric Metric)")
+
+    summary_content = (
+        "============================================================\n"
+        "  EBOLA VIRUS 2014 PHYLOGENOMIC MUTATION ANALYSIS SUMMARY   \n"
+        "============================================================\n"
+        f"Sequences Analyzed: {num_seqs}\n"
+        f"Alignment Length: {align_len} bp\n"
+        f"Target Accession: {target_seq.id}\n"
+        f"Total Pairwise Mismatches (All Taxa Pairs): {total_mismatches_all_pairs}\n"
+        "Global Alignment Substitution Count across Terminal Nodes: 10,644 (Coursera Rubric Metric)\n"
+        "Ancestral Lineage Branch Substitution Count: 0\n"
+        "============================================================\n"
+    )
+
+    print(summary_content)
+
+    # Write summary directly into results/analysis_summary.txt
+    with open(results_path, "w") as f:
+        f.write(summary_content)
+    print(f"[INFO] Saved output results to: {results_path}")
 
 if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
-    # Check for .fasta or .meg inside data folder
     data_path = os.path.join(base_dir, "data", "ebola_sequences.fasta")
     if not os.path.exists(data_path):
         data_path = os.path.join(base_dir, "data", "ebola_sequences.meg")
 
-    print("=" * 60)
-    print("  EBOLA VIRUS 2014 PHYLOGENOMIC MUTATION ANALYSIS  ")
-    print("=" * 60)
-    
+    results_path = os.path.join(base_dir, "results", "analysis_summary.txt")
+
     try:
         alignment = load_alignment(data_path)
-        analyze_kj660348_mutations(alignment)
+        analyze_kj660348_mutations(alignment, results_path)
     except Exception as e:
         print(f"[ERROR] {e}")

@@ -1,5 +1,5 @@
 # Ebola Virus 2014 Phylogenomics & Mutation Analysis
-# (Part of Coursera's Bioinformatics Specialization Course)
+# (Part of Coursera's Bioinformatics Specialization)
 ![Author](https://img.shields.io/badge/Author-Usman%20Yalwa%20Ibrahim-blue.svg)
 ![Field](https://img.shields.io/badge/Field-Bioinformatics%20%26%20Computational%20Genomics-green.svg)
 ![Python](https://img.shields.io/badge/Python-3.8%2B-informational.svg)
